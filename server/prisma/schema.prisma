@@ -1,0 +1,169 @@
+// ============================================
+// PRISMA SCHEMA - PlanIT
+// ============================================
+// This schema works with REAL Neon Postgres DB (set up in Part 1).
+// DATABASE_URL = pooled connection (used by the app at runtime)
+// DIRECT_URL   = direct connection (used for migrations)
+// Both point to the SAME real database - there is no separate "test mode" DB.
+// "Test mode" mentioned later refers to seed/dummy DATA, not a different DB.
+// ============================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================
+// USER
+// ============================================
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String   // hashed with bcrypt
+  avatarUrl String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  ownedBoards     Board[]        @relation("BoardOwner")
+  memberships     BoardMember[]
+  assignedCards   CardAssignee[]
+  comments        Comment[]
+  sentInvites     Invite[]       @relation("InviteSender")
+
+  @@map("users")
+}
+
+// ============================================
+// BOARD
+// ============================================
+model Board {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  ownerId String
+  owner   User   @relation("BoardOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+
+  lists   List[]
+  members BoardMember[]
+  invites Invite[]
+
+  @@map("boards")
+}
+
+// ============================================
+// BOARD MEMBER (join table: User <-> Board, with role)
+// ============================================
+model BoardMember {
+  id      String @id @default(uuid())
+  role    String @default("member") // "owner" | "member"
+  joinedAt DateTime @default(now())
+
+  userId  String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  boardId String
+  board   Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, boardId]) // a user can only be a member of a board once
+  @@map("board_members")
+}
+
+// ============================================
+// INVITE (email invites to join a board)
+// ============================================
+model Invite {
+  id        String   @id @default(uuid())
+  email     String
+  status    String   @default("pending") // "pending" | "accepted" | "declined"
+  createdAt DateTime @default(now())
+
+  boardId String
+  board   Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
+
+  invitedById String
+  invitedBy   User   @relation("InviteSender", fields: [invitedById], references: [id], onDelete: Cascade)
+
+  @@map("invites")
+}
+
+// ============================================
+// LIST (a column on the board, e.g. "To Do", "In Progress")
+// ============================================
+model List {
+  id        String   @id @default(uuid())
+  title     String
+  position  Int      // for ordering lists left-to-right
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  boardId String
+  board   Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
+
+  cards Card[]
+
+  @@map("lists")
+}
+
+// ============================================
+// CARD (a task)
+// ============================================
+model Card {
+  id          String    @id @default(uuid())
+  title       String
+  description String?
+  position    Int       // for ordering cards within a list
+  dueDate     DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  listId String
+  list   List   @relation(fields: [listId], references: [id], onDelete: Cascade)
+
+  assignees CardAssignee[]
+  comments  Comment[]
+
+  @@map("cards")
+}
+
+// ============================================
+// CARD ASSIGNEE (join table: User <-> Card)
+// ============================================
+model CardAssignee {
+  id     String @id @default(uuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  cardId String
+  card   Card   @relation(fields: [cardId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, cardId]) // a user can only be assigned to a card once
+  @@map("card_assignees")
+}
+
+// ============================================
+// COMMENT (on a card)
+// ============================================
+model Comment {
+  id        String   @id @default(uuid())
+  text      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  cardId String
+  card   Card   @relation(fields: [cardId], references: [id], onDelete: Cascade)
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@map("comments")
+}

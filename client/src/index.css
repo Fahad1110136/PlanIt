@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+/* ============================================
+   PLANIT DESIGN TOKENS
+   ============================================ */
+@theme {
+  /* Colors */
+  --color-paper: #FAF9F6;
+  --color-graphite: #1F2421;
+  --color-slate: #3D5A6C;
+  --color-clay: #C7693D;
+  --color-stone: #9A9590;
+  --color-sage: #B8C4B8;
+
+  /* Fonts */
+  --font-display: "Fraunces", serif;
+  --font-body: "Inter", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-paper);
+  color: var(--color-graphite);
+}
