@@ -45,7 +45,7 @@ PlanIT is a full-stack, Trello style project management application. It allows t
 
 ### ☁️ Deployment
 - **Frontend**: Vercel
-- **Backend**: Render
+- **Backend**: Railway
 - **Database**: Neon (serverless PostgreSQL)
 
 ---
@@ -235,9 +235,8 @@ The Vite dev server runs on `http://localhost:5173`.
 When a user sends a board invite via email:
 
 1. An `Invite` record is created in the database with status `pending`.
-2. An email is sent via Resend (from `onboarding@resend.dev` on the free tier) containing a link to the PlanIT login page.
-3. If the invited person logs in (or registers) using that exact email address, the pending invite appears on their dashboard.
-4. They can **Accept** (creates a `BoardMember` record and grants access to the board) or **Decline** (marks the invite as declined).
+2. The pending invite appears on their dashboard.
+3. They can **Accept** (creates a `BoardMember` record and grants access to the board) or **Decline** (marks the invite as declined).
 
 ---
 
