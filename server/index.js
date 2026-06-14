@@ -12,6 +12,13 @@ const initSockets = require("./sockets");
 const app = express();
 const server = http.createServer(app);
 
+
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  "http://localhost:5173",
+  "https://planit-production.vercel.app",
+].filter(Boolean);
+
 // ============================================
 // SOCKET.IO SETUP
 // ============================================
@@ -45,12 +52,7 @@ app.use((req, res, next) => {
 //   credentials: true,
 // }));
 ////////////////////////////////////////////////////////// new //////////////////////////////
-const allowedOrigins = [
-  process.env.CLIENT_URL,
-  "http://localhost:5173",
-  "https://planit-production.vercel.app",
-  "https://planit-frontend-client-production.vercel.app",
-].filter(Boolean);
+
 
 app.use(cors({
   origin: function (origin, callback) {
