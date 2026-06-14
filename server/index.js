@@ -15,13 +15,20 @@ const server = http.createServer(app);
 // ============================================
 // SOCKET.IO SETUP
 // ============================================
+// const io = new Server(server, {
+//   cors: {
+//     origin: process.env.CLIENT_URL || "http://localhost:5173",
+//     credentials: true,
+//   },
+// });
+///////////////////////////////////////////////////////////////////// new /////////////////
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    origin: allowedOrigins,
     credentials: true,
   },
 });
-
+///////////////////////////////////////////////////////////////////////////////////////////
 initSockets(io);
 
 // Make io accessible in route handlers via req.io
@@ -33,10 +40,29 @@ app.use((req, res, next) => {
 // ============================================
 // MIDDLEWARE
 // ============================================
+// app.use(cors({
+//   origin: process.env.CLIENT_URL || "http://localhost:5173",
+//   credentials: true,
+// }));
+////////////////////////////////////////////////////////// new //////////////////////////////
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  "http://localhost:5173",
+  "https://planit-production.vercel.app",
+  "https://planit-frontend-client-production.vercel.app",
+].filter(Boolean);
+
 app.use(cors({
-  origin: process.env.CLIENT_URL || "http://localhost:5173",
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true,
 }));
+/////////////////////////////////////////////////////////////////////////////////////////////
 app.use(express.json());
 
 // ============================================
