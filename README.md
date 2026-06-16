@@ -4,6 +4,10 @@ PlanIT is a full-stack, Trello style project management application. It allows t
 
 ---
 
+### Live Demo: https://planit-production.vercel.app/
+
+---
+
 ## ✨ Features
 
 - **Authentication** — register and log in with JWT-based sessions; passwords hashed with bcrypt.
