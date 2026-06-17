@@ -60,26 +60,11 @@ PlanIT is a full-stack, Trello style project management application. It allows t
 PlanIt/
 ├── server/                          # Express backend
 │   ├── prisma/
-│   │   ├── schema.prisma            # Database models
-│   │   └── client.js                # Prisma client (with pg adapter)
 │   ├── routes/
-│   │   ├── auth.routes.js
-│   │   ├── board.routes.js
-│   │   ├── invite.routes.js
-│   │   └── comment.routes.js
 │   ├── controllers/
-│   │   ├── auth.controller.js
-│   │   ├── board.controller.js
-│   │   ├── list.controller.js
-│   │   ├── card.controller.js
-│   │   ├── invite.controller.js
-│   │   └── comment.controller.js
 │   ├── middleware/
-│   │   └── auth.middleware.js       # JWT verification
 │   ├── sockets/
-│   │   └── index.js                 # Socket.io connection + room handling
 │   ├── utils/
-│   │   └── email.js                 # Resend email sending
 │   ├── index.js                     # Server entry point
 │   ├── prisma.config.ts             # Prisma CLI config (migrations)
 │   ├── .env                         # Environment variables (not committed)
@@ -87,26 +72,15 @@ PlanIt/
 │
 ├── client/                          # React frontend
 │   ├── public/
-│   │   └── planit-logo.png
 │   ├── src/
 │   │   ├── api/
-│   │   │   └── axios.js             # Configured Axios instance
 │   │   ├── components/
 │   │   │   ├── landing/             # Navbar, Hero, Problem, ProductDemo, Features, CTAFooter
 │   │   │   ├── dashboard/           # DashboardNav, BoardCard, CreateBoardModal, InvitesPanel
 │   │   │   └── board/               # List, Card, CardModal, InviteModal, AssigneeDropdown, CommentSection
 │   │   ├── pages/
-│   │   │   ├── LandingPage.jsx
-│   │   │   ├── LoginPage.jsx
-│   │   │   ├── RegisterPage.jsx
-│   │   │   ├── DashboardPage.jsx
-│   │   │   └── BoardPage.jsx
 │   │   ├── store/                   # Zustand stores
-│   │   │   ├── authStore.js
-│   │   │   ├── boardStore.js
-│   │   │   └── teamStore.js
 │   │   ├── hooks/
-│   │   │   └── useBoardSocket.js    # Real-time event subscriptions
 │   │   ├── socket.js                # Socket.io client singleton
 │   │   ├── index.css                # Tailwind + design tokens
 │   │   ├── App.jsx                  # Routes
